@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh Sách Người Dùng</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <div class="container">
+        <h1>Danh Sách Người Dùng</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Họ và Tên</th>
+                    <th>CMND</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Địa Chỉ</th>
+                    <th>Email</th>
+                    <th>Ngày Sinh</th>
+                    <th>Giới Tính</th>
+                    <th>Trạng Thái</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Lặp qua danh sách người dùng -->
+                <tr th:each="nguoi : ${danhSachNguoiDung}">
+                    <td th:text="${nguoi.maNguoiDung}"></td>
+                    <td th:text="${nguoi.tenNguoiDung}"></td>
+                    <td th:text="${nguoi.cmnd}"></td>
+                    <td th:text="${nguoi.soDienThoai}"></td>
+                    <td th:text="${nguoi.diaChi}"></td>
+                    <td th:text="${nguoi.email}"></td>
+                    <td th:text="${nguoi.ngaySinh}"></td>
+                    <td th:text="${nguoi.gioiTinh}"></td>
+                    <td>
+                        <span th:if="${nguoi.trangThaiTaiKhoan}" class="badge badge-success">Hoạt động</span>
+                        <span th:unless="${nguoi.trangThaiTaiKhoan}" class="badge badge-danger">Khóa</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

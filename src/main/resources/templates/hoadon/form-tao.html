@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tạo Hóa Đơn</title>
+</head>
+<body>
+    <h1>Tạo Hóa Đơn</h1>
+    <form action="/hoadon/luu" method="post" th:object="${hoaDonForm}">
+        <label>Mã KH</label><input type="text" th:field="*{maKH}"/><br>
+        <label>Tháng</label><input type="number" th:field="*{thang}"/><br>
+        <label>Năm</label><input type="number" th:field="*{nam}"/><br>
+        <label>Chỉ số cũ</label><input type="number" th:field="*{chiSoCu}"/><br>
+        <label>Chỉ số mới</label><input type="number" th:field="*{chiSoMoi}"/><br>
+        <button type="submit">Tạo hóa đơn</button>
+    </form>
+</body>
+</html>

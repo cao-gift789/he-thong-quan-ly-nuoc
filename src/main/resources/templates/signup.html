@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng Ký Người Dùng</title>
+</head>
+<body>
+    <h1>Đăng Ký Người Dùng</h1>
+    <form action="/signup" method="post">
+        <label for="tenNguoiDung">Tên Người Dùng:</label>
+        <input type="text" id="tenNguoiDung" name="tenNguoiDung" required><br>
+
+        <label for="cmnd">CMND:</label>
+        <input type="text" id="cmnd" name="cmnd" required><br>
+
+        <label for="soDienThoai">Số Điện Thoại:</label>
+        <input type="text" id="soDienThoai" name="soDienThoai" required><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br>
+
+        <label for="ngaySinh">Ngày Sinh:</label>
+        <input type="date" id="ngaySinh" name="ngaySinh" required><br>
+
+        <label for="gioiTinh">Giới Tính:</label>
+        <input type="text" id="gioiTinh" name="gioiTinh" required><br>
+
+        <label for="trangThaiTaiKhoan">Trạng Thái Tài Khoản:</label>
+        <input type="checkbox" id="trangThaiTaiKhoan" name="trangThaiTaiKhoan"><br>
+
+        <button type="submit">Đăng Ký</button>
+    </form>
+</body>
+</html>

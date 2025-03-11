@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách hóa đơn</title>
+</head>
+<body>
+    <h1>Danh sách hóa đơn</h1>
+    <table border="1">
+        <tr>
+            <th>Mã Hóa Đơn</th>
+            <th>Ngày Xuất</th>
+            <th>Hạn Thanh Toán</th>
+            <th>Tổng Tiền</th>
+            <th>Trạng Thái</th>
+        </tr>
+        <tr th:each="hoadon : ${hoaDons}">
+            <td th:text="${hoadon.maHoaDon}"></td>
+            <td th:text="${hoadon.ngXuatHoaDon}"></td>
+            <td th:text="${hoadon.ngDaoHan}"></td>
+            <td th:text="${hoadon.tongTien}"></td>
+            <td th:text="${hoadon.trangThai}"></td>
+        </tr>
+    </table>
+</body>
+</html>
