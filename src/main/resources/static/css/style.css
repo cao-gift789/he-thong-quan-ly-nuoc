@@ -1,53 +1,115 @@
+/* Thiết lập chung */
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
     color: #333;
     margin: 0;
     padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
+/* Container chính */
 .container {
-    width: 80%;
-    margin: 0 auto;
+    width: 90%;
+    max-width: 600px;
+    background: white;
     padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
 }
 
+/* Tiêu đề chính */
 h1 {
-    text-align: center;
     color: #007bff;
+    margin-bottom: 20px;
 }
 
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+/* Form nhập liệu */
+.form-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 }
 
-.table th, .table td {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
+input[type="text"] {
+    width: 80%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
     text-align: center;
 }
 
-.table th {
+/* Các nút bấm */
+button {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: 10px auto;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s ease;
+}
+
+.btn-search {
     background-color: #007bff;
     color: white;
 }
 
-.table td {
-    background-color: #f9f9f9;
+.btn-search:hover {
+    background-color: #0056b3;
 }
 
-.badge {
-    padding: 5px 10px;
-    border-radius: 20px;
+.btn-pay {
+    background-color: #28a745;
     color: white;
 }
 
-.badge-success {
-    background-color: #28a745;
+.btn-pay:hover {
+    background-color: #218838;
 }
 
-.badge-danger {
-    background-color: #dc3545;
+.btn-history {
+    background-color: #ffc107;
+    color: black;
+}
+
+.btn-history:hover {
+    background-color: #e0a800;
+}
+
+/* Hiển thị kết quả */
+.result-card, .history-card {
+    background: #ffffff;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.status-paid {
+    color: green;
+    font-weight: bold;
+}
+
+.status-unpaid {
+    color: red;
+    font-weight: bold;
+}
+
+/* Thông báo lỗi */
+.error {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
 }

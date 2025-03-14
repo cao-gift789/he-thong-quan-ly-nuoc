@@ -3,12 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <title>Trang Chủ</title>
-    <!-- Liên kết đến file CSS -->
     <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <script>
+        function traCuuNuoc() {
+            var maHo = document.getElementById("maHo").value;
+            fetch("/hoadon/tra-cuu?maNguoiDung=" + maHo)
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        document.getElementById("ketQua").innerHTML =
+                            `<div class="result-card">
+                                <h3>Mã hộ: ${data.maHo}</h3>
+                                <p>Số nước sử dụng: <strong>${data.soNuocSuDung} m³</strong></p>
+                                <p>Tổng tiền: <strong>${data.tongTien} VND</strong></p>
+                                ${data.trangThai === "paid" ? "<p class='status-paid'>Đã thanh toán</p>" : 
+                                "<button class='btn-pay' onclick='thanhToan()'>Thanh toán</button>"}
+                                <button class="btn-history" onclick="kiemTraDangNhap(${maHo})">Xem lịch sử hóa đơn</button>
+                            </div>`;
+                    } else {
+                        document.getElementById("ketQua").innerHTML = "<p class='error'>Không tìm thấy dữ liệu</p>";
+                    }
+                });
+        }
+
+        function kiemTraDangNhap(maNguoiDung) {
+            fetch("/nguoidung/check-login", { credentials: 'include' })
+                .then(response => {
+                    if (response.status === 401) {
+                        alert("Bạn cần đăng nhập để xem lịch sử hóa đơn.");
+                        window.location.href = "/login";
+                    } else {
+                        xemLichSu(maNguoiDung);
+                    }
+                });
+        }
+
+        function xemLichSu(maNguoiDung) {
+            fetch("/hoadon/lich-su?maNguoiDung=" + maNguoiDung, { credentials: 'include' })
+                .then(response => response.json())
+                .then(data => {
+                    let historyHTML = `<div class="history-card"><h3>Lịch sử hóa đơn</h3>`;
+                    data.forEach(item => {
+                        historyHTML += `
+                            <p><strong>Tháng ${item.thangNam}</strong>: ${item.soNuocSuDung} m³ - 
+                            Tổng tiền: <strong>${item.tongTien} VND</strong> - 
+                            Trạng thái: <span class="${item.trangThai === 'paid' ? 'status-paid' : 'status-unpaid'}">
+                            ${item.trangThai === 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán'}</span></p>`;
+                    });
+                    historyHTML += `</div>`;
+                    document.getElementById("lichSu").innerHTML = historyHTML;
+                });
+        }
+
+        function thanhToan() {
+            alert("Chuyển sang trang thanh toán...");
+        }
+    </script>
 </head>
 <body>
-    <h1>Hệ thống quản lý nước</h1>
-    <!-- Hiển thị hình ảnh -->
+    <div class="container">
+        <h1>Hệ thống quản lý nước</h1>
 
+        <!-- Form nhập mã hộ để tra cứu -->
+        <div class="form-card">
+            <h2>Tra cứu số nước sử dụng</h2>
+            <p>Nhập mã hộ để kiểm tra số nước sử dụng tháng này:</p>
+            <input type="text" id="maHo" placeholder="Nhập mã hộ">
+            <button class="btn-search" onclick="traCuuNuoc()">Tra cứu</button>
+        </div>
+
+        <div id="ketQua"></div>
+        <div id="lichSu"></div>
+    </div>
 </body>
 </html>

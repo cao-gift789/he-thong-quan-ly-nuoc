@@ -4,45 +4,41 @@ import com.example.waterbill.model.NguoiDung;
 import com.example.waterbill.service.NguoiDungService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
 
-@Controller  // Thay đổi từ @RestController thành @Controller
+@Controller
 @RequestMapping("/nguoidung")
 public class NguoiDungController {
 
     @Autowired
     private NguoiDungService nguoiDungService;
 
-    // API này vẫn trả về dữ liệu JSON cho các request REST API
-    @GetMapping
-    public List<NguoiDung> getAllNguoiDung() {
-        return nguoiDungService.getAllNguoiDung();
+    @PostMapping("/login")
+    public String login(@RequestParam String tenNguoiDung, @RequestParam String matKhau, HttpSession session) {
+        Optional<NguoiDung> user = nguoiDungService.getNguoiDungByTenNguoiDungAndMatKhau(tenNguoiDung, matKhau);
+        if (user.isPresent()) {
+            session.setAttribute("loggedUser", user.get());
+            return "redirect:/";
+        } else {
+            return "redirect:/login?error";
+        }
     }
 
-    @GetMapping("/{id}")
-    public Optional<NguoiDung> getNguoiDungById(@PathVariable int id) {
-        return nguoiDungService.getNguoiDungById(id);
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
     }
 
-    @PostMapping
-    public NguoiDung saveNguoiDung(@RequestBody NguoiDung nguoiDung) {
-        return nguoiDungService.saveNguoiDung(nguoiDung);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteNguoiDung(@PathVariable int id) {
-        nguoiDungService.deleteNguoiDung(id);
-    }
-
-    // Phương thức này sẽ trả về trang HTML (Thymeleaf template) để hiển thị người dùng
-    @GetMapping("/list")
-    public String getAllUsers(Model model) {
-        List<NguoiDung> danhSachNguoiDung = nguoiDungService.getAllNguoiDung();
-        model.addAttribute("danhSachNguoiDung", danhSachNguoiDung);  // Truyền dữ liệu vào model
-        return "nguoidung";  // Trả về file nguoidung.html
+    @GetMapping("/check-login")
+    @ResponseBody
+    public String checkLogin(HttpSession session) {
+        Object loggedUser = session.getAttribute("loggedUser");
+        if (loggedUser == null) {
+            return "Bạn chưa đăng nhập";
+        }
+        return "OK";
     }
 }

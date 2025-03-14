@@ -1,10 +1,11 @@
 package com.example.waterbill.controller;
 
-import com.example.waterbill.model.HoaDon;
-import com.example.waterbill.service.HoaDonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import com.example.waterbill.model.HoaDon;
+import com.example.waterbill.service.HoaDonService;
+import jakarta.servlet.http.HttpSession;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,40 +16,20 @@ public class HoaDonController {
     @Autowired
     private HoaDonService hoaDonService;
 
-    @GetMapping
-    public List<HoaDon> getAllHoaDon() {
-        return hoaDonService.getAllHoaDon();
+    // API tra cứu số nước tháng này (Không cần đăng nhập)
+    @GetMapping("/tra-cuu")
+    public Optional<HoaDon> getHoaDonByNguoiDung(@RequestParam int maNguoiDung) {
+        LocalDate thangNam = LocalDate.now().withDayOfMonth(1);
+        return hoaDonService.getHoaDonByMaHo(maNguoiDung, thangNam);
     }
 
-    @GetMapping("/{id}")
-    public Optional<HoaDon> getHoaDonById(@PathVariable int id) {
-        return hoaDonService.getHoaDonById(id);
-    }
-
-    @PostMapping
-    public HoaDon saveHoaDon(@RequestBody HoaDon hoaDon) {
-        return hoaDonService.saveHoaDon(hoaDon);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteHoaDon(@PathVariable int id) {
-        hoaDonService.deleteHoaDon(id);
-    }
-    // 🔥 **Thêm API lấy hóa đơn theo mã người dùng**
-    @GetMapping("/nguoidung/{maNguoiDung}")
-    public List<HoaDon> getHoaDonByUserId(@PathVariable int maNguoiDung) {
+    // API xem lịch sử hóa đơn (Yêu cầu đăng nhập)
+    @GetMapping("/lich-su")
+    public List<HoaDon> getLichSuHoaDon(@RequestParam int maNguoiDung, HttpSession session) {
+        Object loggedUser = session.getAttribute("loggedUser");
+        if (loggedUser == null) {
+            throw new RuntimeException("Bạn cần đăng nhập để xem lịch sử hóa đơn.");
+        }
         return hoaDonService.getHoaDonByUserId(maNguoiDung);
-    }
-
-    // 🔥 **API cập nhật hóa đơn**
-    @PutMapping("/{id}")
-    public HoaDon updateHoaDon(@PathVariable int id, @RequestBody HoaDon hoaDonDetails) {
-        return hoaDonService.updateHoaDon(id, hoaDonDetails);
-    }
-
-    // 🔥 **API cập nhật trạng thái thanh toán**
-    @PatchMapping("/{id}/trangthai")
-    public HoaDon updateTrangThai(@PathVariable int id, @RequestParam String trangThai) {
-        return hoaDonService.updateTrangThai(id, trangThai);
     }
 }

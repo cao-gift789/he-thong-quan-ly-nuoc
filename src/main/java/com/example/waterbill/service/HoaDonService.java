@@ -1,10 +1,9 @@
 package com.example.waterbill.service;
 
-import com.example.waterbill.model.HoaDon;
-import com.example.waterbill.repository.HoaDonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.example.waterbill.model.HoaDon;
+import com.example.waterbill.repository.HoaDonRepository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -15,19 +14,20 @@ public class HoaDonService {
     @Autowired
     private HoaDonRepository hoaDonRepository;
 
+    // Lấy tất cả hóa đơn
     public List<HoaDon> getAllHoaDon() {
         return hoaDonRepository.findAll();
     }
 
+    // Lấy hóa đơn theo ID
     public Optional<HoaDon> getHoaDonById(int id) {
         return hoaDonRepository.findById(id);
     }
 
+    // Lưu hóa đơn
     public HoaDon saveHoaDon(HoaDon hoaDon) {
-        // ✅ **Tính tổng tiền hóa đơn**
         hoaDon.setTongTien(tinhTienNuoc(hoaDon));
 
-        // ✅ **Xác định trạng thái thanh toán**
         if (hoaDon.getNgThanhToan() == null) {
             if (hoaDon.getNgDaoHan().isBefore(LocalDate.now())) {
                 hoaDon.setTrangThai(HoaDon.TrangThaiHoaDon.TRE_HAN);
@@ -41,44 +41,22 @@ public class HoaDonService {
         return hoaDonRepository.save(hoaDon);
     }
 
+    // Xóa hóa đơn
     public void deleteHoaDon(int id) {
         hoaDonRepository.deleteById(id);
     }
 
-    // 🔥 **Lấy danh sách hóa đơn theo mã người dùng**
+    // Lấy hóa đơn tháng này theo mã người dùng (mã hộ)
+    public Optional<HoaDon> getHoaDonByMaHo(int maNguoiDung, LocalDate thangNam) {
+        return hoaDonRepository.findByNguoiThanhToan_MaNguoiDungAndNgXuatHoaDon(maNguoiDung, thangNam);
+    }
+
+    // Lấy danh sách hóa đơn theo mã người dùng
     public List<HoaDon> getHoaDonByUserId(int maNguoiDung) {
         return hoaDonRepository.findByNguoiThanhToan_MaNguoiDung(maNguoiDung);
     }
 
-    // 🔥 **Cập nhật hóa đơn**
-    public HoaDon updateHoaDon(int id, HoaDon hoaDonDetails) {
-        Optional<HoaDon> hoaDonOptional = hoaDonRepository.findById(id);
-        if (hoaDonOptional.isPresent()) {
-            HoaDon hoaDon = hoaDonOptional.get();
-            hoaDon.setNgXuatHoaDon(hoaDonDetails.getNgXuatHoaDon());
-            hoaDon.setNgDaoHan(hoaDonDetails.getNgDaoHan());
-            hoaDon.setNgThanhToan(hoaDonDetails.getNgThanhToan());
-            hoaDon.setTongTien(hoaDonDetails.getTongTien());
-            hoaDon.setTrangThai(hoaDonDetails.getTrangThai());
-            return hoaDonRepository.save(hoaDon);
-        } else {
-            throw new RuntimeException("Không tìm thấy hóa đơn có ID: " + id);
-        }
-    }
-
-    // 🔥 **Cập nhật trạng thái thanh toán**
-    public HoaDon updateTrangThai(int id, String trangThai) {
-        Optional<HoaDon> hoaDonOptional = hoaDonRepository.findById(id);
-        if (hoaDonOptional.isPresent()) {
-            HoaDon hoaDon = hoaDonOptional.get();
-            hoaDon.setTrangThai(HoaDon.TrangThaiHoaDon.valueOf(trangThai));
-            return hoaDonRepository.save(hoaDon);
-        } else {
-            throw new RuntimeException("Không tìm thấy hóa đơn có ID: " + id);
-        }
-    }
-
-    // ✅ **Hàm tính tổng tiền hóa đơn**
+    // Hàm tính tổng tiền hóa đơn
     private double tinhTienNuoc(HoaDon hoaDon) {
         double giaNuocMoiMetKhoi = 10000;
         int soNuocTieuThu = 30; // Cần lấy từ bảng chỉ số nước

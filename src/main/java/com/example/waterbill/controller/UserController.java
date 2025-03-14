@@ -2,6 +2,7 @@ package com.example.waterbill.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -14,16 +15,24 @@ public class UserController {
 	@Autowired
 	private NguoiDungService nguoiDungservice;
 	
-	// Trang dang ky nguoi duung
+	// Trang đăng ký người dùng
 	@GetMapping("/signup")
-	public String sigup() {
+	public String signup() {
 		return "signup"; 
 	}
 	
-	// Xu ly dang ky nguoi dung
+	// Xử lý đăng ký người dùng
 	@PostMapping("/signup")
-	public String registerUser(NguoiDung nguoiDung) {
-		nguoiDungservice.saveNguoiDung(nguoiDung);//Luu ng dung vao CSDL
-		return "redirect:/login";
+	public String registerUser(NguoiDung nguoiDung, Model model) {
+		nguoiDungservice.saveNguoiDung(nguoiDung); // Lưu người dùng vào CSDL
+		// Thêm thông báo vào model
+		model.addAttribute("message", "Đăng ký thành công! Vui lòng đăng nhập.");
+		// Chuyển hướng đến trang login và hiển thị thông báo
+		return "redirect:/login";  // Bạn có thể chuyển hướng về trang login hoặc trang khác
+	}
+	
+	@GetMapping("/login")
+	public String loginPage() {
+		return "login";
 	}
 }
